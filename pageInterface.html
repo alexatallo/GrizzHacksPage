@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -93,36 +92,79 @@
 
     <script>
         function sendMessage() {
-            var userInput = document.getElementById('user-input').value;
-            var chatContainer = document.getElementById('chat-container');
+    var userInput = document.getElementById('user-input').value;
+    var chatContainer = document.getElementById('chat-container');
 
-            // Display user message
-            var userMessage = document.createElement('div');
-            userMessage.className = 'user-message';
-            userMessage.textContent = userInput;
-            chatContainer.appendChild(userMessage);
+    // Display user message
+    var userMessage = document.createElement('div');
+    userMessage.className = 'user-message';
+    userMessage.textContent = userInput;
+    chatContainer.appendChild(userMessage);
 
-            // Add your logic to handle user input and generate a response
-            var response = generateResponse(userInput);
-
+    // Add your logic to handle user input and generate a response
+    generateResponse(userInput)
+        .then(response => {
             // Display chatbot response
             var chatMessage = document.createElement('div');
             chatMessage.className = 'chat-message';
             chatMessage.textContent = response;
             chatContainer.appendChild(chatMessage);
 
-            // Clear the input field
-            document.getElementById('user-input').value = '';
+            // If the response is book information, append it to the chat container
+            if (response.title && response.cover) {
+                const bookTitleElement = document.createElement('div');
+                bookTitleElement.textContent = `Title: ${response.title}`;
 
-            // Scroll to the bottom of the chat container
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
+                const bookCoverImage = document.createElement('img');
+                bookCoverImage.src = response.cover;
+                bookCoverImage.alt = 'Book Cover';
 
-        function generateResponse(userInput) {
-            // Add your logic to generate a response based on user input
-            return "Thank you for your message!";
+                chatContainer.appendChild(bookTitleElement);
+                chatContainer.appendChild(bookCoverImage);
+            }
+        })
+        .catch(error => {
+            console.error('Error generating response:', error);
+        });
+
+    // Clear the input field
+    document.getElementById('user-input').value = '';
+
+    // Scroll to the bottom of the chat container
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+
+function generateResponse(userInput) {
+    console.log('User input:', userInput); // Add this line to log user input
+    return new Promise((resolve, reject) => {
+        // Check if the user asked for a random book recommendation
+        if (userInput.toLowerCase().includes('random')) {
+            console.log('Fetching random book...'); // Add this line to log fetching
+            // Make an AJAX request to the /random-book route
+            fetch('/random-book')
+                .then(response => response.json())
+                .then(data => {
+                    // Extract book information from the response
+                    const bookTitle = data.title;
+                    const bookCover = data.cover;
+                    // Resolve the Promise with the book information
+                    resolve({ title: bookTitle, cover: bookCover });
+                })
+                .catch(error => {
+                    // Reject the Promise if there's an error
+                    reject(error);
+                });
+        } else {
+            // If the user didn't ask for a random book recommendation, return a generic response
+            resolve("Thank you for your message!");
         }
+    });
+}
+
+
     </script>
+
 </body>
 
 </html>
