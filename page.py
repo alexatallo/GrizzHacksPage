@@ -6,7 +6,7 @@ from googleapiclient.discovery import build
 app = Flask("Page")
 
 # Set up OpenAI API
-openai.api_key = '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'
+openai.api_key = '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'
 
 # Set up Google Books API
 google_books_api_key = 'AIzaSyC5ETJFUZ8X4SN14NIOrjbMCvzv4a0qAts'
