@@ -1,36 +1,60 @@
 from flask import Flask, render_template, request, jsonify
-import openai
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+import string
+nltk.download('punkt')
+nltk.download('wordnet')
 import requests
 from googleapiclient.discovery import build
 
-app = Flask("Page")
+app = Flask(__name__)
 
 # Set up OpenAI API
-openai.api_key = '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'
+#openai.api_key = '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'
 
 # Set up Google Books API
 google_books_api_key = 'AIzaSyC5ETJFUZ8X4SN14NIOrjbMCvzv4a0qAts'
 GOOGLE_BOOKS_API_URL = 'https://www.googleapis.com/books/v1/volumes'
+
 
 # Route for serving the HTML file
 @app.route('/')
 def home():
     return render_template('interface.html')
 
-# Route for chatbot
+#this is a function to preprocess text using NLTK
+def preprocess_text(text):
+  # Tokenize the text into words
+    tokens = word_tokenize(text)
+
+    # Remove punctuation
+    tokens = [word for word in tokens if word not in string.punctuation]
+
+    # Convert to lowercase
+    tokens = [word.lower() for word in tokens]
+
+    # Remove stop words
+    stop_words = set(stopwords.words('english'))
+    tokens = [word for word in tokens if word not in stop_words]
+
+    # Lemmatization
+    lemmatizer = WordNetLemmatizer()
+    tokens = [lemmatizer.lemmatize(word) for word in tokens]
+
+    # Join the tokens back into a string
+    processed_text = ' '.join(tokens)
+    return processed_text
+
+
 @app.route('/chat', methods=['POST'])
 def chat():
-    data = request.form
-    user_input = data['input']
+    user_input = request.form['input']
+    # Process user input and generate response
+    response = "This is a response to your input: " + user_input
+    return render_template('interface.html', response=response)
 
-    prompt = "This is a friendly book recommendation system. Recommend random books, books based on genre, or similar books. User input: " + user_input
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt=prompt,
-        max_tokens=50
-    )
-    chat_response = response.choices[0].text.strip()
-    return jsonify({'response': chat_response})
 
 # Route for random book recommendations
 @app.route('/random-book')
@@ -64,5 +88,13 @@ def random_book():
         # Return an error message if the request to the Google Books API fails
         return jsonify({'error': 'Failed to fetch random book'}), response.status_code
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Route for displaying book details
+@app.route('/book-details/<book_id>')
+def book_details(book_id):
+    # Add logic to fetch and display book details from the Google Books API
+    # Render the book details template with book information
+
+
+
+     if __name__ == '__main__':
+            app.run(debug=True)
