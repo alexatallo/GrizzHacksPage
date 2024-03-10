@@ -6,6 +6,7 @@ from nltk.stem import WordNetLemmatizer
 import string
 import requests
 from googleapiclient.discovery import build
+import random
 
 nltk.download('punkt')
 nltk.download('wordnet')
@@ -49,6 +50,13 @@ def preprocess_text(text):
     return processed_text
 
 
+# Function to generate a random search term
+def generate_random_search_term():
+    search_term_length = random.randint(3, 10)
+    search_term = ''.join(random.choices(string.ascii_lowercase, k=search_term_length))
+    return search_term
+
+
 @app.route('/chat', methods=['POST'])
 def chat():
     user_input = request.form['input']
@@ -60,11 +68,13 @@ def chat():
 # Route for random book recommendations
 @app.route('/random-book')
 def random_book():
+    # Generate a random search term
+    random_search_term = generate_random_search_term()
+
     # Parameters for the API request
     params = {
-        'q': 'random',
+        'q': random_search_term,
         'key': google_books_api_key,
-        'orderBy': 'relevance',
         'maxResults': 1  # Get only one random book
     }
 
@@ -73,28 +83,33 @@ def random_book():
 
     if response.status_code == 200:
         # Extract information about the random book
-        book_info = response.json()['items'][0]['volumeInfo']
-        book_title = book_info['title']
-        book_author = ', '.join(book_info['authors'])
-        book_description = book_info.get('description', 'No description available')
-        book_cover = book_info['imageLinks']['thumbnail'] if 'imageLinks' in book_info else ''
+        book_info = response.json().get('items', [])
+        if book_info:
+            book_info = book_info[0]['volumeInfo']
+            book_title = book_info.get('title', 'No title available')
+            book_author = ', '.join(book_info.get('authors', ['Unknown author']))
+            book_description = book_info.get('description', 'No description available')
+            book_cover = book_info['imageLinks']['thumbnail'] if 'imageLinks' in book_info else ''
 
-        # Return the information about the random book as JSON
-        return jsonify({
-            'title': book_title,
-            'author': book_author,
-            'description': book_description,
-            'cover': book_cover
-        })
+            # Return the information about the random book as JSON
+            return jsonify({
+                'title': book_title,
+                'author': book_author,
+                'description': book_description,
+                'cover': book_cover
+            })
+        else:
+            return jsonify({'error': 'No books found for the query'}), 404
     else:
         # Return an error message if the request to the Google Books API fails
         return jsonify({'error': 'Failed to fetch random book'}), response.status_code
+
 
 # Route for displaying book details
 @app.route('/book-details/<book_id>')
 def book_details(book_id):
     # Make a GET request to the Google Books API to fetch book details
-    book_url = f"{GOOGLE_BOOKS_API_URL}/{book_id}"
+    book_url = "%s%s" % (GOOGLE_BOOKS_API_URL, book_id)
     response = requests.get(book_url, params={'key': google_books_api_key})
 
     if response.status_code == 200:
@@ -108,7 +123,7 @@ def book_details(book_id):
         book_cover = book_info['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in book_info['volumeInfo'] else ''
 
         # Render the book details template with book information
-        return render_template('book_details.html', title=book_title, author=book_author,
+        return render_template('pageInterface.html', title=book_title, author=book_author,
                                description=book_description, cover=book_cover)
     else:
         # Return an error message if the request to the Google Books API fails
