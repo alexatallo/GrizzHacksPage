@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<<<<<<< HEAD
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -168,3 +169,190 @@ function generateResponse(userInput) {
 </body>
 
 </html>
+=======
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Book Recommendation Page</title>
+   <style>
+       body {
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           justify-content: center;
+           height: 100vh;
+           margin: 0;
+           font-family: 'Arial', sans-serif;
+       }
+
+
+       h1 {
+           color: rgb(184, 26, 184);
+           text-align: center;
+           margin-bottom: 20px;
+       }
+
+
+       .scroll-container {
+           max-height: 300px;
+           overflow-y: auto;
+           padding: 10px;
+           border: 1px solid #ccc;
+           width: 80%;
+           margin-bottom: 20px;
+       }
+
+
+       /* Styles for the chatbot container */
+       .chatbot-container {
+           display: flex;
+           flex-direction: column;
+           align-items: flex-end;
+           width: 80%;
+       }
+
+
+       /* Styles for the chat messages */
+       .chat-message {
+           background-color: #d497ef;
+           padding: 8px;
+           border-radius: 5px;
+           margin-bottom: 5px;
+           max-width: 70%;
+           align-self: flex-start;
+       }
+
+
+       /* Styles for user messages */
+       .user-message {
+           align-self: flex-end;
+           background-color: #e4aaff;
+       }
+
+
+       /* Styles for the input field and button */
+       .user-input {
+           display: flex;
+           margin-top: 10px;
+       }
+
+
+       input {
+           flex: 1;
+           padding: 5px;
+       }
+
+
+       button {
+           padding: 5px 10px;
+           margin-left: 5px;
+           cursor: pointer;
+       }
+   </style>
+</head>
+
+
+<body>
+   <h1>Page - Your Book Recommendation Page</h1>
+
+
+   <div class="chatbot-container" id="chat-container">
+       <!-- Example chat messages -->
+       <div class="chat-message">Hello! How can I help you today?</div>
+       <div class="user-message">Hi! I'm looking for book recommendations.</div>
+       <!-- Add more chat messages as needed -->
+
+
+       <!-- Input field for user interaction -->
+       <div class="user-input">
+           <input type="text" placeholder="Type your message..." id="user-input">
+           <button onclick="sendMessage()">Send</button>
+       </div>
+   </div>
+
+
+   <script>
+       function sendMessage() {
+           var userInput = document.getElementById('user-input').value;
+           var chatContainer = document.getElementById('chat-container');
+
+
+           // Display user message
+           var userMessage = document.createElement('div');
+           userMessage.className = 'user-message';
+           userMessage.textContent = userInput;
+           chatContainer.appendChild(userMessage);
+
+
+           // Add your logic to handle user input and generate a response
+           var response = generateResponse(userInput, chatContainer);
+
+
+           // Display chatbot response
+           var chatMessage = document.createElement('div');
+           chatMessage.className = 'chat-message';
+           chatMessage.textContent = response;
+           chatContainer.appendChild(chatMessage);
+
+
+           // Clear the input field
+           document.getElementById('user-input').value = '';
+
+
+           // Scroll to the bottom of the chat container
+           chatContainer.scrollTop = chatContainer.scrollHeight;
+       }
+
+
+       function generateResponse(userInput, chatContainer) {
+           // Check if the user asked for a random book recommendation
+           if (userInput.toLowerCase().includes('random')) {
+               // Make an AJAX request to the /random-book route
+               fetch('/random-book')
+                   .then(response => response.json())
+                   .then(data => {
+                       // Extract book information from the response
+                       const bookTitle = data.title;
+                       const bookCover = data.cover;
+
+
+                       // Create HTML elements to display the book information
+                       const bookTitleElement = document.createElement('div');
+                       bookTitleElement.textContent = `Title: ${bookTitle}`;
+
+
+                       const bookCoverImage = document.createElement('img');
+                       bookCoverImage.src = bookCover;
+                       bookCoverImage.alt = 'Book Cover';
+
+
+                       // Append book information to the chat container
+                       chatContainer.appendChild(bookTitleElement);
+                       chatContainer.appendChild(bookCoverImage);
+                   })
+                   .catch(error => {
+                       // Handle error if the request fails
+                       console.error('Error fetching random book:', error);
+                   });
+
+
+               // Return a response acknowledging the user's request
+               return "Fetching a random book recommendation...";
+           } else {
+               // If the user didn't ask for a random book recommendation, return a generic response
+               return "Thank you for your message!";
+           }
+       }
+   </script>
+
+
+</body>
+
+
+</html>
+
+
+
+
+>>>>>>> 7fdb0668f280d2c3135e2ef7b3583afb5d495c79
