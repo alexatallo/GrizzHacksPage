@@ -79,10 +79,8 @@ def random_book():
     }
 
    # Make a GET request to the Google Books API
-   response = requests.get(GOOGLE_BOOKS_API_URL, params=params)
-
-
-        if response.status_code == 200:
+    response = requests.get(GOOGLE_BOOKS_API_URL, params=params)
+    if response.status_code == 200:
        # Extract information about the random book
        book_info = response.json()['title'][0]['description']
        book_title = book_info['title']
@@ -91,16 +89,16 @@ def random_book():
        book_cover = book_info['imageLinks']['thumbnail'] if 'imageLinks' in book_info else ''
 
 
-       # Return the information about the random book as JSON
-        return jsonify({
+       # Return the information about the random book as JSOs
+       return jsonify({
            'title': book_title,
            'author': book_author,
            'description': book_description,
            'cover': book_cover
        })
-        else:
+    else:
        # Return an error message if the request to the Google Books API fails
-        return jsonifysonify({'error': 'Failed to fetch random book'}), response.status_code
+        return jsonify({'error': 'Failed to fetch random book'}), response.status_code
 
 
 # Route for displaying book details
