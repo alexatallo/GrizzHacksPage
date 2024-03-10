@@ -2,355 +2,301 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Recommendation Page</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-        }
-
-        h1 {
-            color: rgb(184, 26, 184);
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .scroll-container {
-            max-height: 300px;
-            overflow-y: auto;
-            padding: 10px;
-            border: 1px solid #ccc;
-            width: 80%;
-            margin-bottom: 20px;
-        }
-
-        /* Styles for the chatbot container */
-        .chatbot-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            width: 80%;
-        }
-
-        /* Styles for the chat messages */
-        .chat-message {
-            background-color: #d497ef;
-            padding: 8px;
-            border-radius: 5px;
-            margin-bottom: 5px;
-            max-width: 70%;
-            align-self: flex-start;
-        }
-
-        /* Styles for user messages */
-        .user-message {
-            align-self: flex-end;
-            background-color: #e4aaff;
-        }
-
-        /* Styles for the input field and button */
-        .user-input {
-            display: flex;
-            margin-top: 10px;
-        }
-
-        input {
-            flex: 1;
-            padding: 5px;
-        }
-
-        button {
-            padding: 5px 10px;
-            margin-left: 5px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-
-<body>
-    <h1>Page - Your Book Recommendation Page</h1>
-
-    <div class="chatbot-container" id="chat-container">
-        <!-- Example chat messages -->
-        <div class="chat-message">Hello! How can I help you today?</div>
-        <div class="user-message">Hi! I'm looking for book recommendations.</div>
-        <!-- Add more chat messages as needed -->
-
-        <!-- Input field for user interaction -->
-        <div class="user-input">
-            <input type="text" placeholder="Type your message..." id="user-input">
-            <button onclick="sendMessage()">Send</button>
-        </div>
-    </div>
-
-    <script>
-        function sendMessage() {
-    var userInput = document.getElementById('user-input').value;
-    var chatContainer = document.getElementById('chat-container');
-
-    // Display user message
-    var userMessage = document.createElement('div');
-    userMessage.className = 'user-message';
-    userMessage.textContent = userInput;
-    chatContainer.appendChild(userMessage);
-
-    // Add your logic to handle user input and generate a response
-    generateResponse(userInput)
-        .then(response => {
-            // Display chatbot response
-            var chatMessage = document.createElement('div');
-            chatMessage.className = 'chat-message';
-            chatMessage.textContent = response;
-            chatContainer.appendChild(chatMessage);
-
-            // If the response is book information, append it to the chat container
-            if (response.title && response.cover) {
-                const bookTitleElement = document.createElement('div');
-                bookTitleElement.textContent = `Title: ${response.title}`;
-
-                const bookCoverImage = document.createElement('img');
-                bookCoverImage.src = response.cover;
-                bookCoverImage.alt = 'Book Cover';
-
-                chatContainer.appendChild(bookTitleElement);
-                chatContainer.appendChild(bookCoverImage);
-            }
-        })
-        .catch(error => {
-            console.error('Error generating response:', error);
-        });
-
-    // Clear the input field
-    document.getElementById('user-input').value = '';
-
-    // Scroll to the bottom of the chat container
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-}
-
-
-function generateResponse(userInput) {
-    console.log('User input:', userInput); // Add this line to log user input
-    return new Promise((resolve, reject) => {
-        // Check if the user asked for a random book recommendation
-        if (userInput.toLowerCase().includes('random')) {
-            console.log('Fetching random book...'); // Add this line to log fetching
-            // Make an AJAX request to the /random-book route
-            fetch('/random-book')
-                .then(response => response.json())
-                .then(data => {
-                    // Extract book information from the response
-                    const bookTitle = data.title;
-                    const bookCover = data.cover;
-                    // Resolve the Promise with the book information
-                    resolve({ title: bookTitle, cover: bookCover });
-                })
-                .catch(error => {
-                    // Reject the Promise if there's an error
-                    reject(error);
-                });
-        } else {
-            // If the user didn't ask for a random book recommendation, return a generic response
-            resolve("Thank you for your message!");
-        }
-    });
-}
-
-
-    </script>
-
-</body>
-
-</html>
-=======
-
-<head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Book Recommendation Page</title>
+   <title>page</title>
    <style>
-       body {
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-           justify-content: center;
-           height: 100vh;
-           margin: 0;
-           font-family: 'Arial', sans-serif;
-       }
+      body {
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         height: 100vh;
+         margin: 0;
+         font-family: 'Arial', sans-serif;
+         background-image: url('book.jpg');
+         background-size: cover; /* Light background color */
+      }
+
+      h1 {
+         color: #8e44ad; /* Purple heading color */
+         text-align: center;
+         margin-bottom: 20px;
+         font-style:italic;
+         font-size: xx-large;
+      }
+
+      .chatbot-container {
+   position: relative; /* Make the container relative for absolute positioning */
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   width: 100%;
+   max-width: 500px; /* Limit chat container width for better readability */
+   background-color: #d7b9e5; /* White background for chat container */
+   border-radius: 10px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
+   padding: 20px;
+   margin-bottom: 60px; /* Adjusted margin-bottom to make space for the fixed input */
+   overflow-y: auto; /* Add scrollbar for overflow */
+   max-height: 100vh; /* Limit chat container height */
+}
+
+      .user-input {
+   position: fixed; /* Position the input box fixed at the bottom right */
+   bottom: 0; /* Align the input box to the bottom */
+   right: 0; /* Align the input box to the right */
+   width: 100%; /* Make the input box span the entire width of the container */
+   padding: 10px 5px; /* Adjusted padding */
+   background-color: #f8f9fa; /* Light background color for input box */
+   display: flex; /* Use flexbox to align input and button */
+}
 
 
-       h1 {
-           color: rgb(184, 26, 184);
-           text-align: center;
-           margin-bottom: 20px;
-       }
+      input[type="text"] {
+         flex-grow: 1; /* Make the input fill the available space */
+         padding: 10px; /* Adjust padding as needed */
+         border: none;
+         border-radius: 5px;
+         font-size: 16px;
+         outline: none;
+         box-sizing: border-box; /* Include padding and border in width calculation */
+      }
 
+      button {
+         width: auto; /* Auto width for the button */
+         padding: 10px;
+         border: none;
+         border-radius: 5px;
+         background-color: #8e44ad; /* Purple button background */
+         color: #fff; /* White button text color */
+         cursor: pointer;
+         transition: background-color 0.3s;
+         font-size: 16px;
+         box-sizing: border-box; /* Include padding and border in width calculation */
+      }
 
-       .scroll-container {
-           max-height: 300px;
-           overflow-y: auto;
-           padding: 10px;
-           border: 1px solid #ccc;
-           width: 80%;
-           margin-bottom: 20px;
-       }
+      button:hover {
+         background-color: #6c3483; /* Darker purple on hover */
+      }
 
+      .chat-message {
+         background-color: #dcdde1; /* Light gray chat bubble */
+         padding: 10px 15px;
+         border-radius: 20px;
+         margin-bottom: 10px;
+         max-width: 70%;
+         word-wrap: break-word; /* Break long words */
+      }
 
-       /* Styles for the chatbot container */
-       .chatbot-container {
-           display: flex;
-           flex-direction: column;
-           align-items: flex-end;
-           width: 80%;
-       }
+      .user-message {
+         align-self: flex-end;
+         background-color: #dcdde1; /* Light gray chat bubble */
+         padding: 10px 15px;
+         border-radius: 20px;
+         margin-bottom: 10px;
+         max-width: 70%;
+         word-wrap: break-word; /* Break long words */
+      }
 
+      /* Recommended similar books styling */
+      #result {
+         width: 100%;
+         padding: 100px;
+      }
 
-       /* Styles for the chat messages */
-       .chat-message {
-           background-color: #d497ef;
-           padding: 8px;
-           border-radius: 5px;
-           margin-bottom: 5px;
-           max-width: 70%;
-           align-self: flex-start;
-       }
+      #result h2 {
+         color: #8e44ad;
+         font-size: 24px;
+         margin-bottom: 15px;
+      }
 
+      .book {
+         background-color: #fff;
+         border-radius: 10px;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+         padding: 20px;
+         margin-bottom: 20px;
+      }
 
-       /* Styles for user messages */
-       .user-message {
-           align-self: flex-end;
-           background-color: #e4aaff;
-       }
+      .book-title {
+         font-size: 18px;
+         font-weight: bold;
+         color: #333;
+         margin-bottom: 10px;
+      }
 
+      .book-description {
+         font-size: 16px;
+         color: #666;
+      }
 
-       /* Styles for the input field and button */
-       .user-input {
-           display: flex;
-           margin-top: 10px;
-       }
-
-
-       input {
-           flex: 1;
-           padding: 5px;
-       }
-
-
-       button {
-           padding: 5px 10px;
-           margin-left: 5px;
-           cursor: pointer;
-       }
+      .no-books {
+         color: #666;
+         font-size: 16px;
+         text-align: center;
+      }
    </style>
 </head>
 
-
 <body>
-   <h1>Page - Your Book Recommendation Page</h1>
-
+   <h1>Page</h1>
 
    <div class="chatbot-container" id="chat-container">
-       <!-- Example chat messages -->
-       <div class="chat-message">Hello! How can I help you today?</div>
-       <div class="user-message">Hi! I'm looking for book recommendations.</div>
-       <!-- Add more chat messages as needed -->
+      <!-- Example chat messages -->
+      <div class="chat-message">Hello! How can I help you today?</div>
+      <div class="user-message">Hi! I'm looking for book recommendations.</div>
+      <!-- Add more chat messages as needed -->
 
-
-       <!-- Input field for user interaction -->
-       <div class="user-input">
-           <input type="text" placeholder="Type your message..." id="user-input">
-           <button onclick="sendMessage()">Send</button>
-       </div>
+      <!-- Input field for user interaction -->
+      <div class="user-input">
+         <input type="text" placeholder="Type your message..." id="user-input">
+         <button onclick="sendMessage()">Send</button>
+      </div>
    </div>
 
+   <form id="bookForm">
+      <label for="bookTitle">Enter a book title or genre:</label>
+      <input type="text" id="bookTitle" name="bookTitle">
+      <button type="submit">Submit</button>
+   </form>
+
+   <div id="result"></div>
 
    <script>
-       function sendMessage() {
-           var userInput = document.getElementById('user-input').value;
-           var chatContainer = document.getElementById('chat-container');
+      function sendMessage() {
+         var userInput = document.getElementById('user-input').value;
+         var chatContainer = document.getElementById('chat-container');
 
+         // Display user message
+         var userMessage = document.createElement('div');
+         userMessage.className = 'user-message';
+         userMessage.textContent = userInput;
+         chatContainer.appendChild(userMessage);
 
-           // Display user message
-           var userMessage = document.createElement('div');
-           userMessage.className = 'user-message';
-           userMessage.textContent = userInput;
-           chatContainer.appendChild(userMessage);
+         // Clear the input field
+         document.getElementById('user-input').value = '';
 
+         // Send user input to the server as form data
+         var formData = new FormData();
+         formData.append('input', userInput);
 
-           // Add your logic to handle user input and generate a response
-           var response = generateResponse(userInput, chatContainer);
+         fetch('/chat', {
+            method: 'POST',
+            body: formData
+         })
+            .then(response => response.json())
+            .then(data => {
+               // Display chatbot response
+               var chatMessage = document.createElement('div');
+               chatMessage.className = 'chat-message';
+               chatMessage.textContent = data.response;
+               chatContainer.appendChild(chatMessage);
 
+               // If the response is book information, append it to the chat container
+               if (data.title && data.cover) {
+                  const bookTitleElement = document.createElement('div');
+                  bookTitleElement.textContent = `Title: ${data.title}`;
 
-           // Display chatbot response
-           var chatMessage = document.createElement('div');
-           chatMessage.className = 'chat-message';
-           chatMessage.textContent = response;
-           chatContainer.appendChild(chatMessage);
+                  const bookCoverImage = document.createElement('img');
+                  bookCoverImage.src = data.cover;
+                  bookCoverImage.alt = 'Book Cover';
+                  bookCoverImage.style.maxWidth = '100%'; // Ensure image fits container
+                  bookCoverImage.classList.add('book-cover'); // Add the book-cover class
 
+                  chatContainer.appendChild(bookTitleElement);
+                  chatContainer.appendChild(bookCoverImage);
+               }
 
-           // Clear the input field
-           document.getElementById('user-input').value = '';
+               // Scroll to the bottom of the chat container
+               chatContainer.scrollTop = chatContainer.scrollHeight;
+            })
+            .catch(error => {
+               console.error('Error sending message to server:', error);
+            });
+      }
 
+      document.getElementById('bookForm').addEventListener('submit', function (event) {
+         event.preventDefault(); // Prevent default form submission
+         var userInput = document.getElementById('bookTitle').value.trim();
+         var form = new FormData(this); // Create FormData object from form data
 
-           // Scroll to the bottom of the chat container
-           chatContainer.scrollTop = chatContainer.scrollHeight;
-       }
+         // Check if the user input is "random"
+         if (userInput.toLowerCase() === "random") {
+            // Make a request to the server for a random book recommendation
+            fetch('/random-book')
+               .then(response => response.json()) // Parse response JSON
+               .then(data => {
+                  // Display the random book recommendation
+                  var resultDiv = document.getElementById('result');
+                  resultDiv.innerHTML = `
+                       <h2>Random Book Recommendation:</h2>
+                       <div class="book">
+                           <div class="book-title">${data.title}</div>
+                           <div class="book-description">${data.description}</div>
+                       </div>`;
+               })
+               .catch(error => {
+                  console.error('Error:', error);
+               });
+         } else {
+            // Make a request to the server for book recommendations based on the user input
+            fetch('/recommend-similar', {
+               method: 'POST',
+               body: form
+            })
+               .then(response => response.json()) // Parse response JSON
+               .then(data => {
+                  // Display recommended similar books
+                  var resultDiv = document.getElementById('result');
+                  resultDiv.innerHTML = '<h2>Recommended Similar Books:</h2>';
+                  if (data.similar_books && data.similar_books.length > 0) {
+                     data.similar_books.forEach(book => {
+                        resultDiv.innerHTML += `
+                           <div class="book">
+                               <div class="book-title">${book.title}</div>
+                               <div class="book-description">${book.description}</div>
+                           </div>`;
+                     });
+                  } else {
+                     resultDiv.innerHTML += '<p class="no-books">No similar books found.</p>';
+                  }
+               })
+               .catch(error => {
+                  console.error('Error:', error);
+               });
+         }
+      });
 
+      function openModal(title, description) {
+         var modal = document.getElementById('bookModal');
+         var modalTitle = document.getElementById('modalTitle');
+         var modalDescription = document.getElementById('modalDescription');
 
-       function generateResponse(userInput, chatContainer) {
-           // Check if the user asked for a random book recommendation
-           if (userInput.toLowerCase().includes('random')) {
-               // Make an AJAX request to the /random-book route
-               fetch('/random-book')
-                   .then(response => response.json())
-                   .then(data => {
-                       // Extract book information from the response
-                       const bookTitle = data.title;
-                       const bookCover = data.cover;
+         modal.style.display = 'block'; // Display the modal
+         modalTitle.textContent = title; // Set modal title
+         modalDescription.textContent = description; // Set modal description
+      }
 
+      // Function to close the modal
+      function closeModal() {
+         var modal = document.getElementById('bookModal');
+         modal.style.display = 'none'; // Hide the modal
+      }
 
-                       // Create HTML elements to display the book information
-                       const bookTitleElement = document.createElement('div');
-                       bookTitleElement.textContent = `Title: ${bookTitle}`;
-
-
-                       const bookCoverImage = document.createElement('img');
-                       bookCoverImage.src = bookCover;
-                       bookCoverImage.alt = 'Book Cover';
-
-
-                       // Append book information to the chat container
-                       chatContainer.appendChild(bookTitleElement);
-                       chatContainer.appendChild(bookCoverImage);
-                   })
-                   .catch(error => {
-                       // Handle error if the request fails
-                       console.error('Error fetching random book:', error);
-                   });
-
-
-               // Return a response acknowledging the user's request
-               return "Fetching a 'r'andom book recommendation...";
-           } else {
-               // If the user didn't ask for a random book recommendation, return a generic response
-               return "Thank you for your message!";
-           }
-       }
+      // Add event listeners to book cover images
+      var bookCovers = document.querySelectorAll('.book-cover');
+      bookCovers.forEach(function (cover) {
+         cover.addEventListener('click', function () {
+            // Get book information from the cover's data attributes
+            var title = cover.dataset.title;
+            var description = cover.dataset.description;
+            // Call openModal function to display the book information
+            openModal(title, description);
+         });
+      });
    </script>
-
-
 </body>
 
-
 </html>
-
-
-
 
